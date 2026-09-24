@@ -1,6 +1,8 @@
 # SouJunior — Landing da comunidade
 
 > Projeto da equipe **Fecapers** para o **Hackathon SouJunior** (setembro de 2026).
+>
+> **Site no ar:** https://hackaton-fecapers.vercel.app
 
 Landing page institucional da **SouJunior**, a comunidade gratuita onde
 pessoas em início de carreira ganham experiência real em tecnologia trabalhando em produtos
@@ -25,8 +27,10 @@ geradas como páginas estáticas.
   galeria em perspectiva. Tudo desliga com `prefers-reduced-motion`.
 - **Acessível**: navegação por teclado, foco visível, menu mobile com foco preso, landmarks e
   contraste AA.
-- **SEO**: metadados, Open Graph, Twitter Card, JSON-LD (`Organization` e `WebSite`), `sitemap.xml`
-  e `robots.txt`.
+- **SEO e compartilhamento**: metadados completos com palavras-chave, imagem Open Graph gerada
+  no build, Twitter Card, JSON-LD, `sitemap.xml`, `robots.txt` e manifest (detalhes abaixo).
+- **Pronto para IA**: `llms.txt` e `llms-full.txt` resumem a página para assistentes de IA e
+  buscadores com IA.
 - **Conteúdo centralizado**: textos, links e depoimentos ficam em `content/` e alimentam tanto a
   página quanto o Juno.
 
@@ -51,6 +55,28 @@ No desktop o painel flutua no canto; em telas menores que 640 px ele abre como p
   servidor, e `lib/juno/system-prompt.ts` traz o prompt de sistema. Para ativar, basta criar o
   endpoint e informar o caminho em `junoConfig.remoteEndpoint` (`lib/juno/config.ts`). A chave da
   API nunca vai para o navegador.
+
+## SEO, compartilhamento e IA
+
+Todos os textos de SEO saem de `content/seo.ts` (título, descrições, palavras-chave e equipe), e
+o endereço do site sai de `SITE_URL` em `content/links.ts`.
+
+| Rota | Arquivo | O que entrega |
+| --- | --- | --- |
+| `/` | `app/layout.tsx` | título, descrição, palavras-chave, autores, canonical, Open Graph, Twitter Card, diretivas para o Googlebot e JSON-LD (`Organization`, `WebSite` e `WebPage`) |
+| `/opengraph-image` | `app/opengraph-image.tsx` | imagem de compartilhamento 1200×630, gerada no build com `next/og` |
+| `/twitter-image` | `app/twitter-image.tsx` | a mesma imagem para o X/Twitter |
+| `/sitemap.xml` | `app/sitemap.ts` | sitemap com as imagens da página |
+| `/robots.txt` | `app/robots.ts` | libera buscadores e robôs de IA (GPTBot, ClaudeBot, PerplexityBot etc.) |
+| `/manifest.webmanifest` | `app/manifest.ts` | nome, cores e ícones para instalar a página |
+| `/llms.txt` | `app/llms.txt/route.ts` | resumo da página para assistentes de IA, no padrão [llmstxt.org](https://llmstxt.org) |
+| `/llms-full.txt` | `app/llms-full.txt/route.ts` | todos os textos da landing em Markdown |
+| `/humans.txt` | `app/humans.txt/route.ts` | créditos da equipe |
+
+A imagem Open Graph (`lib/og/share-image.tsx`) usa as mesmas fontes, cores, números e mascote da
+página. O `next/og` não lê WOFF2, por isso `assets/og/` guarda cópias em TTF das fontes do site,
+só com os caracteres latinos. O `llms.txt` e o `llms-full.txt` (`lib/llms.ts`) são montados a
+partir de `content/`: se um texto muda na página, muda também neles.
 
 ## Stack
 
@@ -123,9 +149,16 @@ e nada interativo funciona no celular (menu mobile, Juno).
 app/
   layout.tsx          metadados, SEO, Open Graph, JSON-LD e pré-carregamento das fontes
   page.tsx            ordem das seções
+  opengraph-image.tsx imagem de compartilhamento (Open Graph)
+  twitter-image.tsx   imagem de compartilhamento (X/Twitter)
+  manifest.ts         manifest.webmanifest
   robots.ts           robots.txt
   sitemap.ts          sitemap.xml
+  llms.txt/           resumo para assistentes de IA
+  llms-full.txt/      conteúdo completo para assistentes de IA
+  humans.txt/         créditos da equipe
   globals.css         importa os estilos de styles/
+assets/og/            fontes em TTF usadas só na imagem de compartilhamento
 components/
   layout/             cabeçalho (com menu mobile) e rodapé
   sections/           uma seção da landing por arquivo
@@ -138,18 +171,21 @@ content/
   testimonials.ts     depoimentos
   community-gallery.ts  fotos da galeria da comunidade
   links.ts            URLs externas e domínio do site
+  seo.ts              título, descrições, palavras-chave e equipe
   juno-knowledge.ts   base de conhecimento do Juno
   contact-channels.ts canais oficiais de contato usados pelo Juno
   types.ts            tipos do conteúdo
 hooks/                chat do Juno, voz (reconhecimento e leitura), media queries e teclado virtual
 lib/
   juno/               intenções, respostas, sessão de conversa e provedores local e remoto
+  og/                 layout da imagem de compartilhamento
+  llms.ts             textos do llms.txt, llms-full.txt e humans.txt
   utils.ts            utilitários
 styles/
   tokens.css          cores, tipografia, espaçamento, raios e sombras
   base.css, components.css, layout.css, sections.css, community-gallery.css, motion.css, juno.css
 types/                tipos da Web Speech API
-public/               logo, mascotes, imagens, fontes, favicon e imagem de Open Graph
+public/               logo, mascotes, imagens, fontes e ícones
 ```
 
 Textos e listas ficam em `content/`; os componentes só apresentam os dados.
@@ -161,8 +197,8 @@ Os links com valor `null` (formulários de júnior, mentor e head, SouJunior Tal
 e redes sociais) mantêm o botão visível e mostram o aviso “será divulgado em breve”;
 redes sociais só aparecem no rodapé quando tiverem URL.
 
-`SITE_URL` (canonical, Open Graph, sitemap e robots) deve ser trocado para o domínio oficial
-quando ele for definido.
+`SITE_URL` (canonical, Open Graph, sitemap, robots, JSON-LD e llms.txt) aponta para
+https://hackaton-fecapers.vercel.app e deve ser trocado quando houver um domínio oficial.
 
 ## Design system
 
@@ -203,9 +239,10 @@ o campo de texto visível quando o teclado virtual abre no celular.
 
 ## Deploy
 
-É um projeto Next.js padrão: a [Vercel](https://vercel.com) detecta tudo sozinha, e qualquer
-hospedagem com Node serve com `npm run build` + `npm start`. Todas as rotas são estáticas
-(`/`, `robots.txt` e `sitemap.xml`).
+O site está publicado na [Vercel](https://vercel.com) em https://hackaton-fecapers.vercel.app.
+É um projeto Next.js padrão: a Vercel detecta tudo sozinha, e qualquer hospedagem com Node serve
+com `npm run build` + `npm start`. Todas as rotas são geradas como arquivos estáticos no build,
+inclusive a imagem Open Graph, o `sitemap.xml` e o `llms.txt`.
 
 ## Equipe Fecapers
 
