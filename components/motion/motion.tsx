@@ -181,6 +181,62 @@ function setupScenes() {
   });
 }
 
+/**
+ * Jornada: a linha de progresso acompanha a rolagem (scrub, sem pin) e cada
+ * etapa ganha destaque ao cruzar o meio da tela. Etapas já vistas continuam
+ * visíveis; nada trava ou exige que a animação termine.
+ */
+function setupJourney() {
+  const journey = document.querySelector<HTMLElement>('[data-journey]');
+  if (!journey) return () => {};
+
+  const steps = q('[data-journey-step]', journey);
+  const fill = journey.querySelector<HTMLElement>('[data-journey-fill]');
+  const LINE = 'top 62%';
+  journey.dataset.animated = 'true';
+
+  if (fill) {
+    gsap.fromTo(
+      fill,
+      {scaleY: 0},
+      {scaleY: 1, ease: 'none', scrollTrigger: {trigger: journey, start: LINE, end: 'bottom 62%', scrub: 0.4}},
+    );
+  }
+
+  const reach = (step: HTMLElement) => (step.dataset.reached = 'true');
+  steps.forEach((step) => {
+    ScrollTrigger.create({
+      trigger: step,
+      start: LINE,
+      end: 'bottom 62%',
+      onEnter: () => reach(step),
+      onEnterBack: () => reach(step),
+      onLeave: () => reach(step),
+      onToggle: (self) => {
+        if (self.isActive) step.dataset.current = 'true';
+        else delete step.dataset.current;
+      },
+    });
+  });
+
+  // Chegando por âncora ou recarregando no meio da página: o que já passou fica visível.
+  const catchUp = requestAnimationFrame(() => {
+    const line = window.innerHeight * 0.62;
+    steps.forEach((step) => {
+      if (step.getBoundingClientRect().top <= line) reach(step);
+    });
+  });
+
+  return () => {
+    cancelAnimationFrame(catchUp);
+    delete journey.dataset.animated;
+    steps.forEach((step) => {
+      delete step.dataset.reached;
+      delete step.dataset.current;
+    });
+  };
+}
+
 /** Parallax discreto em mascotes e formas decorativas (somente desktop). */
 function setupParallax() {
   q('[data-parallax]').forEach((el) => {
@@ -247,12 +303,14 @@ export function Motion() {
       setupLineReveals();
       setupBridge();
       setupScenes();
+      const resetJourney = setupJourney();
 
       const refresh = () => ScrollTrigger.refresh();
       document.fonts?.ready.then(refresh);
       window.addEventListener('load', refresh);
       return () => {
         restoreCounters();
+        resetJourney();
         window.removeEventListener('load', refresh);
       };
     });
