@@ -1,5 +1,7 @@
 import {links, SITE_URL} from '@/content/links';
-import {siteDescription, siteLongDescription, siteName, tagline, team, githubUrl} from '@/content/seo';
+import {discoveryIntro, discoveryQuestions} from '@/content/area-discovery';
+import {journeyClosing, journeyIntro, journeySteps} from '@/content/journey';
+import {organization, siteDescription, siteLongDescription, siteName, tagline, team, githubUrl} from '@/content/seo';
 import {
   areas,
   communityFacts,
@@ -54,6 +56,8 @@ export function buildLlmsTxt() {
     `- [Nossa proposta](${anchor('sobre')}): por que a SouJunior existe e a ponte entre estudar e atuar (${proposalPoints.map((p) => p.title).join(', ')}).`,
     `- [O que você encontra](${anchor('pilares')}): ${pillars.map((p) => p.title.toLowerCase()).join('; ')}.`,
     `- [Áreas de atuação](${anchor('areas')}): ${areas.length} áreas (${areas.map((a) => a.name).join(', ')}).`,
+    `- [Sua jornada](${anchor('jornada')}): como é a experiência de quem entra, em ${journeySteps.length} etapas (${journeySteps.map((s) => s.label.toLowerCase()).join(', ')}).`,
+    `- [Descubra seu lugar](${anchor('descubra')}): ${discoveryQuestions.length} perguntas rápidas que sugerem áreas para conhecer, sem cadastro. ${discoveryIntro.note}`,
     `- [Depoimentos](${anchor('depoimentos')}): relatos de pessoas que participaram da comunidade.`,
     `- [Faça parte](${anchor('participe')}): caminhos de participação (${communityRoles.map((r) => r.title).join(', ')}).`,
     `- [Seja mentor](${anchor('mentores')}): como profissionais experientes podem ajudar.`,
@@ -66,6 +70,8 @@ export function buildLlmsTxt() {
     '',
     '## Links oficiais',
     '',
+    `- [Site oficial da SouJunior](${organization.website}): página institucional da comunidade.`,
+    `- [LinkedIn da SouJunior](${organization.linkedin}): novidades e oportunidades da comunidade.`,
     `- [Apoia.se da SouJunior](${links.apoiaSe}): apoio financeiro à comunidade.`,
     ...initiatives.map((i) => linkOrPending(i.name, i.href, i.text)),
     '',
@@ -106,6 +112,20 @@ export function buildLlmsFullTxt() {
     `## Áreas de atuação (${areas.length})`,
     '',
     ...areas.map((a) => `- **${a.name}**: ${a.description}`),
+    '',
+    '## Sua jornada na SouJunior',
+    '',
+    journeyIntro.lead.join(' '),
+    '',
+    ...journeySteps.map((s) => `${String(s.id).padStart(2, '0')}. **${s.title}** ${s.text.join(' ')}${s.highlight ? ` ${s.highlight}` : ''}`),
+    '',
+    `${journeyClosing.lines.join(' ')} ${journeyClosing.complement}`,
+    '',
+    '## Descubra seu lugar',
+    '',
+    `${discoveryIntro.lead} ${discoveryIntro.note} Não é teste vocacional: a página soma pontos localmente, sem cadastro e sem enviar respostas, e sugere até três áreas para conhecer.`,
+    '',
+    ...discoveryQuestions.map((q, i) => `${i + 1}. ${q.question} (${q.options.map((o) => o.label).join('; ')})`),
     '',
     '## Depoimentos',
     '',
