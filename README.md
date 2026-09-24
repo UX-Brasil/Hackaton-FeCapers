@@ -19,8 +19,13 @@ geradas como páginas estáticas.
 ## Principais recursos
 
 - **Landing completa e responsiva**: hero, nossa proposta, pilares, galeria da experiência na
-  prática, áreas de atuação, depoimentos, caminhos de participação, mentoria, iniciativas
-  (SouJunior Talk e SouJunior Labs), formas de apoio (incluindo o Apoia.se) e chamada final.
+  prática, áreas de atuação, sua jornada, descubra seu lugar, depoimentos, caminhos de
+  participação, mentoria, iniciativas (SouJunior Talk e SouJunior Labs), formas de apoio
+  (incluindo o Apoia.se) e chamada final.
+- **Sua jornada na SouJunior**: timeline em cinco etapas que mostra como seria a experiência de
+  quem entra, com a linha de progresso acompanhando a rolagem.
+- **Descubra seu lugar**: quatro perguntas rápidas que sugerem áreas para conhecer, sem cadastro
+  e sem backend (detalhes abaixo).
 - **Juno, assistente virtual**: chat com sugestões de perguntas, entrada por voz e leitura das
   respostas em voz alta (detalhes abaixo).
 - **Animações com propósito**: revelações ao rolar, títulos linha a linha, parallax discreto e
@@ -33,6 +38,32 @@ geradas como páginas estáticas.
   buscadores com IA.
 - **Conteúdo centralizado**: textos, links e depoimentos ficam em `content/` e alimentam tanto a
   página quanto o Juno.
+
+## Sua jornada e Descubra seu lugar
+
+Duas seções logo depois das áreas de atuação ajudam quem ainda pensa "será que isso é para mim?".
+
+**Sua jornada na SouJunior** (`#jornada`) mostra cinco etapas: você chega, encontra sua área, entra
+em uma equipe, constrói de verdade e evolui. No desktop a introdução fica fixa à esquerda enquanto
+as etapas passam; no celular a timeline é vertical. A linha de progresso acompanha a rolagem e cada
+etapa ganha destaque ao cruzar o meio da tela, sem travar o scroll e sem esconder o que já passou.
+Com `prefers-reduced-motion`, tudo aparece de uma vez. A seção reutiliza um depoimento e os números
+que já estão na página e não promete vaga: fala de uma evolução possível.
+
+**Descubra seu lugar** (`#descubra`) é uma ferramenta de descoberta, não um teste vocacional:
+
+- uma pergunta por vez, com progresso ("1 de 4"), **Voltar** (preserva as respostas) e **Refazer**;
+- cada opção soma pontos a áreas relacionadas (`content/area-discovery.ts`), e o resultado mostra
+  até três áreas, com o motivo de cada uma. A pontuação é determinística: empates favorecem a área
+  citada por mais respostas e, depois, a ordem da seção de áreas (`lib/area-discovery.ts`);
+- **Conhecer essa área** rola até o card da área e o destaca por alguns segundos;
+- **Conversar com o Juno sobre essas áreas** abre o Juno com as sugestões como contexto; e, no
+  sentido inverso, quem diz ao Juno "não sei qual área escolher" recebe o botão
+  **Descobrir meu lugar**, que leva ao quiz;
+- não pede nome, e-mail nem telefone, e nada sai do navegador;
+- opções são botões (`aria-pressed`) dentro de `fieldset`/`legend`, acessíveis por Tab, Enter e
+  Espaço; a opção escolhida tem cor, borda e ícone de check; o foco acompanha cada pergunta e o
+  resultado, que também é anunciado em `aria-live`.
 
 ## Juno, o assistente virtual
 
@@ -166,8 +197,11 @@ components/
   mascot/             Juno, mascote do Apoia.se e o palco do Juno
   motion/             camada de animação (GSAP + ScrollTrigger)
   juno/               botão, painel, mensagens, voz e contato do Juno
+  journey/            sua jornada (timeline) e descubra seu lugar (quiz)
 content/
   site.ts             textos, áreas, pilares, caminhos, iniciativas e formas de apoio
+  journey.ts          etapas e textos da jornada
+  area-discovery.ts   perguntas, pontuação por área e textos do quiz
   testimonials.ts     depoimentos
   community-gallery.ts  fotos da galeria da comunidade
   links.ts            URLs externas e domínio do site
@@ -179,11 +213,14 @@ hooks/                chat do Juno, voz (reconhecimento e leitura), media querie
 lib/
   juno/               intenções, respostas, sessão de conversa e provedores local e remoto
   og/                 layout da imagem de compartilhamento
+  area-discovery.ts   cálculo das áreas sugeridas pelo quiz
+  scroll.ts           leva até um card de área e o destaca
   llms.ts             textos do llms.txt, llms-full.txt e humans.txt
   utils.ts            utilitários
 styles/
   tokens.css          cores, tipografia, espaçamento, raios e sombras
-  base.css, components.css, layout.css, sections.css, community-gallery.css, motion.css, juno.css
+  base.css, components.css, layout.css, sections.css, community-gallery.css, journey.css,
+  motion.css, juno.css
 types/                tipos da Web Speech API
 public/               logo, mascotes, imagens, fontes e ícones
 ```
