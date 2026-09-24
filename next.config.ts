@@ -16,6 +16,13 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: __dirname,
   },
+  experimental: {
+    // O cache de build do Turbopack (padrão desde o Next 16.3) é restaurado
+    // pela Vercel a cada deploy e já serviu um CSS antigo, sem o
+    // styles/journey.css recém-importado no globals.css. O site é pequeno:
+    // compilar do zero a cada build é mais seguro. O cache do `next dev` segue ativo.
+    turbopackFileSystemCacheForBuild: false,
+  },
 };
 
 export default nextConfig;
