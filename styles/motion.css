@@ -1,0 +1,117 @@
+/* ==========================================================================
+   Movimento — keyframes, estados iniciais e preferência de movimento reduzido.
+   As animações de entrada e scroll são feitas com GSAP (components/motion).
+   ========================================================================== */
+
+@keyframes sj-float {
+  0%,
+  100% {
+    translate: 0 0;
+    rotate: -1.5deg;
+  }
+  50% {
+    translate: 0 -8px;
+    rotate: 1.5deg;
+  }
+}
+
+@keyframes sj-shadow {
+  0%,
+  100% {
+    scale: 1;
+    opacity: 1;
+  }
+  50% {
+    scale: 0.82;
+    opacity: 0.55;
+  }
+}
+
+@keyframes sj-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes sj-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes sj-menu-in {
+  from {
+    opacity: 0;
+    translate: 0 -1.5rem;
+  }
+}
+
+@keyframes sj-menu-out {
+  to {
+    opacity: 0;
+    translate: 0 -1rem;
+  }
+}
+
+@keyframes sj-toast-in {
+  from {
+    opacity: 0;
+    translate: 0 1rem;
+  }
+}
+
+@keyframes sj-toast-out {
+  to {
+    opacity: 0;
+    translate: 0 0.5rem;
+  }
+}
+
+@keyframes sj-toast-swipe {
+  from {
+    transform: translateX(var(--radix-toast-swipe-end-x));
+  }
+  to {
+    transform: translateX(110%);
+  }
+}
+
+@keyframes sj-reveal-fallback {
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mascot__float {
+    animation: sj-float 5s ease-in-out infinite;
+  }
+
+  .mascot__shadow {
+    animation: sj-shadow 5s ease-in-out infinite;
+  }
+
+  .apoia__mascot .mascot__float {
+    animation-duration: 4.2s;
+    animation-delay: -1.2s;
+  }
+
+  /* O hero começa oculto somente quando há JS (classe `js` no <html>) e até
+     a camada de animação assumir. Se o JS demorar ou falhar, o conteúdo
+     aparece sozinho depois de 2,5s. */
+  .js:not(.motion-ready) [data-hero] {
+    opacity: 0;
+    animation: sj-reveal-fallback 0.5s ease 2.5s forwards;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

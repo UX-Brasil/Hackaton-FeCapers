@@ -1,0 +1,228 @@
+/* ==========================================================================
+   A experiência na prática (#experiencia)
+   Galeria em perspectiva entre Pilares e Áreas. Estrutura e movimento em
+   components/ui/animated-gallery.tsx (Motion); aqui ficam só medidas e visual,
+   sempre com os tokens de styles/tokens.css.
+   ========================================================================== */
+
+.section.experience {
+  padding-bottom: 0;
+  background: var(--surface);
+}
+
+.experience .section-header {
+  margin-bottom: clamp(1rem, 0.5rem + 2vw, 2.5rem);
+}
+
+.experience__hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: var(--space-3);
+  color: var(--foreground-strong);
+  font-family: var(--font-ui);
+  font-size: var(--text-small);
+  font-weight: 650;
+}
+
+.experience__hint svg {
+  flex-shrink: 0;
+  color: var(--brand-primary);
+}
+
+/* ---------- Trilho e palco ----------
+   A altura do trilho define por quanto tempo o palco fica fixo. */
+
+.experience__scroll {
+  height: 170svh;
+  min-height: 0;
+}
+
+.experience__stage {
+  --gallery-gap: 0.625rem;
+  --gallery-perspective: clamp(800px, 115svh, 1300px);
+  --stage-fade: clamp(1.5rem, 7svh, 4.5rem);
+
+  top: var(--header-h);
+  height: calc(100svh - var(--header-h));
+  min-height: 22rem;
+}
+
+/* Fades na cor da superfície: as fotos somem nas bordas do palco em vez de
+   serem cortadas (mais barato que mask/blur). */
+.experience__stage::before,
+.experience__stage::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  height: var(--stage-fade);
+  pointer-events: none;
+}
+
+.experience__stage::before {
+  top: 0;
+  background: linear-gradient(var(--surface), rgb(255 255 255 / 0));
+}
+
+.experience__stage::after {
+  bottom: 0;
+  background: linear-gradient(rgb(255 255 255 / 0), var(--surface));
+}
+
+.experience__gallery {
+  /* Limitada também pela altura da tela: a composição mostra ~3 fotos por
+     coluna em notebooks baixos e em monitores altos. */
+  width: min(100% - 2 * var(--gutter), 68rem, 125svh);
+  margin-inline: auto;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* Colunas mais altas que o palco, centralizadas: sobram fotos acima e abaixo. */
+  align-content: center;
+  gap: var(--gallery-gap);
+}
+
+.experience__col {
+  gap: var(--gallery-gap);
+}
+
+/* Terceira coluna só a partir do tablet. */
+.experience__col:nth-child(3) {
+  display: none;
+}
+
+/* ---------- Fotos ---------- */
+
+.experience__photo {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: var(--accent-tint, var(--surface-tint));
+  box-shadow: 0 1px 2px rgb(10 22 98 / 0.05), 0 12px 28px -18px rgb(10 22 98 / 0.3);
+}
+
+.experience__photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Rótulo com o quadrado de cor da área, como nos números de Áreas. */
+.experience__tag {
+  position: absolute;
+  left: 0.5rem;
+  bottom: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  background: rgb(255 255 255 / 0.94);
+  color: var(--sj-navy);
+  font-family: var(--font-ui);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.experience__tag::before {
+  content: '';
+  width: 0.5rem;
+  height: 0.5rem;
+  flex-shrink: 0;
+  border-radius: 2px;
+  background: var(--accent-color, var(--brand-primary));
+}
+
+/* ---------- Ponte para Áreas ---------- */
+
+.experience__bridge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-top: clamp(2.5rem, 2rem + 2vw, 4rem);
+}
+
+.experience__bridge p {
+  max-width: 34rem;
+  color: var(--foreground-muted);
+  font-size: var(--text-body-lg);
+  line-height: 1.45;
+}
+
+.experience__bridge strong {
+  display: block;
+  color: var(--foreground-strong);
+  font-weight: 650;
+}
+
+.experience__bridge-icon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  color: var(--brand-primary);
+}
+
+/* ---------- Tablet ---------- */
+
+@media (min-width: 640px) {
+  .experience__scroll {
+    height: 210svh;
+  }
+
+  .experience__stage {
+    --gallery-gap: 0.875rem;
+  }
+
+  .experience__gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .experience__col:nth-child(3) {
+    display: flex;
+  }
+
+  .experience__tag {
+    left: 0.75rem;
+    bottom: 0.75rem;
+  }
+}
+
+/* ---------- Desktop ---------- */
+
+@media (min-width: 1024px) {
+  .experience__scroll {
+    height: 240svh;
+  }
+
+  .experience__stage {
+    --gallery-gap: 1rem;
+  }
+
+  .experience__photo {
+    border-radius: var(--radius-md);
+  }
+}
+
+/* ---------- Movimento reduzido ----------
+   Sem trilho longo nem palco fixo: a galeria vira um mosaico estático. */
+
+@media (prefers-reduced-motion: reduce) {
+  .experience__scroll {
+    height: auto;
+  }
+
+  .experience__stage {
+    position: relative;
+    top: auto;
+    height: min(80svh, 44rem);
+  }
+}

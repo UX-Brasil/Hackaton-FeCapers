@@ -1,0 +1,1213 @@
+/* ==========================================================================
+   Juno — guia conversacional da SouJunior (botão flutuante + painel).
+   Usa os tokens de styles/tokens.css. Todas as classes têm o prefixo `jn-`.
+   Movimento só com prefers-reduced-motion: no-preference; uma única fonte
+   de animação (CSS) por elemento.
+   ========================================================================== */
+
+:root {
+  --jn-edge: 1.25rem;
+  --jn-launcher-size: 3.5rem;
+  /* Espaço do botão do Juno no canto inferior direito: outros elementos
+     flutuantes (ex.: voltar ao topo) empilham acima dele. */
+  --juno-launcher-clearance: calc(var(--jn-launcher-size) + 0.75rem);
+  /* Microfone ativo: o vermelho convencional de gravação, só neste estado. */
+  --jn-live: #c9302c;
+  --jn-live-tint: #fff0ef;
+  --jn-panel-shadow: 0 32px 72px -24px rgb(10 22 98 / 0.45), 0 2px 8px rgb(10 22 98 / 0.08);
+}
+
+@media (min-width: 640px) {
+  :root {
+    --jn-launcher-size: 4rem;
+  }
+}
+
+/* ---------- Botão flutuante ---------- */
+
+.jn-launcher {
+  position: fixed;
+  right: calc(var(--jn-edge) + env(safe-area-inset-right, 0px));
+  bottom: calc(var(--jn-edge) + env(safe-area-inset-bottom, 0px));
+  z-index: 45;
+  pointer-events: none;
+}
+
+.jn-launcher > * {
+  pointer-events: auto;
+}
+
+.jn-trigger {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--jn-launcher-size);
+  height: var(--jn-launcher-size);
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--sj-white);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  transition:
+    transform var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration) var(--ease-out);
+}
+
+.jn-trigger:hover {
+  box-shadow: 0 20px 40px -18px rgb(10 22 98 / 0.55);
+}
+
+.jn-trigger:active {
+  transform: scale(0.96);
+}
+
+.jn-trigger:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+.jn-trigger__juno {
+  height: 76%;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+.jn-trigger__minimize {
+  position: absolute;
+  inset: -1px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--sj-navy);
+  color: var(--sj-white);
+  opacity: 0;
+  transform: scale(0.7);
+  transition:
+    opacity var(--duration-fast) var(--ease-out),
+    transform var(--duration) var(--ease-out);
+}
+
+.jn-launcher[data-open='true'] .jn-trigger__minimize {
+  opacity: 1;
+  transform: none;
+}
+
+.jn-launcher[data-open='true'] .jn-trigger__juno {
+  opacity: 0;
+}
+
+/* Rótulo que aparece ao passar o mouse ou focar pelo teclado. */
+.jn-trigger__label {
+  position: absolute;
+  top: 50%;
+  right: calc(100% + 0.75rem);
+  padding: 0.375rem 0.75rem;
+  border-radius: var(--radius-pill);
+  background: var(--sj-navy);
+  color: var(--sj-white);
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
+  font-weight: 650;
+  white-space: nowrap;
+  opacity: 0;
+  translate: 0.25rem -50%;
+  pointer-events: none;
+  transition:
+    opacity var(--duration-fast) var(--ease-out),
+    translate var(--duration-fast) var(--ease-out);
+}
+
+.jn-trigger:focus-visible .jn-trigger__label {
+  opacity: 1;
+  translate: 0 -50%;
+}
+
+@media (hover: hover) {
+  .jn-trigger:hover .jn-trigger__label {
+    opacity: 1;
+    translate: 0 -50%;
+  }
+}
+
+.jn-launcher[data-open='true'] .jn-trigger__label {
+  display: none;
+}
+
+/* Convite da primeira visita na sessão. */
+.jn-hint {
+  position: absolute;
+  right: calc(100% + 0.75rem);
+  bottom: 0.25rem;
+  width: max-content;
+  max-width: min(15rem, calc(100vw - var(--jn-launcher-size) - 3.5rem));
+  padding: 0.75rem 2rem 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md) var(--radius-md) 4px var(--radius-md);
+  background: var(--sj-white);
+  box-shadow: var(--shadow-sm);
+  color: var(--sj-ink);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+
+.jn-hint strong {
+  color: var(--sj-navy);
+  font-family: var(--font-display);
+}
+
+.jn-hint__close {
+  position: absolute;
+  top: 0.375rem;
+  right: 0.375rem;
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--foreground-muted);
+  cursor: pointer;
+}
+
+.jn-hint__close:hover {
+  background: var(--surface-muted);
+}
+
+/* ---------- Avatar do Juno ---------- */
+
+/* Flex (não grid): a altura percentual da imagem precisa de um contêiner com altura definida. */
+.jn-avatar {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.jn-avatar img {
+  display: block;
+  width: auto;
+  height: 100%;
+  max-width: none;
+  transform-origin: 50% 90%;
+  user-select: none;
+}
+
+.jn-avatar--sm {
+  width: 1.875rem;
+  height: 1.875rem;
+  padding: 0.25rem;
+  border-radius: 50%;
+  background: var(--tint-blue);
+}
+
+.jn-avatar--md {
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0.3125rem;
+  border-radius: 50%;
+  background: var(--sj-white);
+}
+
+/* ---------- Painel ---------- */
+
+.jn-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 57;
+  background: rgb(10 22 98 / 0.45);
+}
+
+.jn-panel {
+  position: fixed;
+  z-index: 58;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: var(--jn-panel-shadow);
+  color: var(--foreground);
+  font-family: var(--font-body);
+  outline: none;
+}
+
+/* Desktop e tablet: painel flutuante acima do botão, sem bloquear a página. */
+.jn-panel[data-mode='floating'],
+.jn-loading[data-mode='floating'] {
+  right: calc(var(--jn-edge) + env(safe-area-inset-right, 0px));
+  bottom: calc(var(--jn-edge) + env(safe-area-inset-bottom, 0px) + var(--jn-launcher-size) + 0.75rem);
+}
+
+.jn-panel[data-mode='floating'] {
+  z-index: 55;
+  width: min(25rem, calc(100vw - 2 * var(--jn-edge)));
+  height: min(40rem, calc(100vh - var(--header-h, 4.5rem) - var(--jn-launcher-size) - 3rem));
+  height: min(40rem, calc(100dvh - var(--header-h, 4.5rem) - var(--jn-launcher-size) - 3rem));
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  transform-origin: bottom right;
+}
+
+/* Mobile: bottom sheet quase em tela cheia, acompanhando o teclado virtual. */
+.jn-panel[data-mode='sheet'] {
+  top: calc(var(--jn-vv-top, 0px) + max(0.75rem, env(safe-area-inset-top, 0px)));
+  right: 0;
+  left: 0;
+  height: calc(var(--jn-vv-height, 100dvh) - max(0.75rem, env(safe-area-inset-top, 0px)));
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.jn-loading {
+  position: fixed;
+  z-index: 55;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--jn-panel-shadow);
+  color: var(--foreground-strong);
+  font-family: var(--font-ui);
+  font-size: var(--text-small);
+  font-weight: 600;
+}
+
+.jn-loading[data-mode='sheet'] {
+  right: 0.75rem;
+  bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+  left: 0.75rem;
+}
+
+/* ---------- Cabeçalho ---------- */
+
+.jn-header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 0.75rem 0.875rem 1rem;
+  background: linear-gradient(120deg, var(--sj-navy), #1a2595);
+  color: var(--sj-white);
+}
+
+.jn-header__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.jn-title {
+  color: var(--sj-white);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.jn-subtitle {
+  margin-top: 0.125rem;
+  color: #c9cfec;
+  font-size: var(--text-small);
+  line-height: 1.3;
+}
+
+.jn-presence {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-top: 0.25rem;
+  color: var(--sj-cyan);
+  font-family: var(--font-ui);
+  font-size: var(--text-caption);
+  font-weight: 650;
+}
+
+.jn-presence__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--sj-cyan);
+  box-shadow: 0 0 0 3px rgb(34 211 238 / 0.25);
+}
+
+.jn-presence[data-live] {
+  color: #ffc9c6;
+}
+
+.jn-presence[data-live] .jn-presence__dot {
+  background: #ff5a52;
+  box-shadow: 0 0 0 3px rgb(255 90 82 / 0.35);
+}
+
+.jn-header__actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 0.25rem;
+}
+
+.jn-icon-btn {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: rgb(255 255 255 / 0.1);
+  color: var(--sj-white);
+  cursor: pointer;
+  transition: background-color var(--duration-fast);
+}
+
+.jn-icon-btn:hover {
+  background: rgb(255 255 255 / 0.2);
+}
+
+.jn-icon-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.jn-header .jn-icon-btn:focus-visible {
+  outline-color: var(--sj-yellow);
+}
+
+.jn-icon-btn--muted {
+  width: 2.25rem;
+  height: 2.25rem;
+  background: transparent;
+  color: var(--foreground-muted);
+}
+
+.jn-icon-btn--muted:hover {
+  background: rgb(10 22 98 / 0.06);
+}
+
+.jn-confirm {
+  display: flex;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 0.75rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--tint-yellow);
+  color: var(--sj-ink);
+  font-size: var(--text-small);
+}
+
+/* ---------- Conversa ---------- */
+
+.jn-scroll {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  padding: 1rem 1rem 0.75rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--surface-tint);
+  scrollbar-width: thin;
+}
+
+.jn-log {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.jn-msg {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.jn-msg[data-role='user'] {
+  justify-content: flex-end;
+}
+
+.jn-msg__avatar {
+  margin-top: 0.125rem;
+}
+
+.jn-msg__bubble {
+  min-width: 0;
+  max-width: 88%;
+}
+
+.jn-msg[data-role='assistant'] .jn-msg__bubble {
+  padding: 0.75rem 0.875rem;
+  border: 1px solid var(--border);
+  border-radius: 4px var(--radius-md) var(--radius-md) var(--radius-md);
+  background: var(--surface);
+}
+
+.jn-msg[data-role='user'] .jn-msg__bubble {
+  max-width: 82%;
+  padding: 0.625rem 0.875rem;
+  border-radius: var(--radius-md) 4px var(--radius-md) var(--radius-md);
+  background: var(--sj-navy);
+}
+
+.jn-msg__text {
+  color: var(--sj-ink);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.jn-msg[data-role='user'] .jn-msg__text {
+  color: var(--sj-white);
+}
+
+.jn-msg__text p {
+  white-space: pre-line;
+}
+
+.jn-msg__text > * + * {
+  margin-top: 0.5rem;
+}
+
+.jn-msg__text ul {
+  margin: 0.375rem 0 0;
+  padding-left: 1.125rem;
+  list-style: disc;
+}
+
+.jn-msg__text li + li {
+  margin-top: 0.125rem;
+}
+
+.jn-msg__text li::marker {
+  color: var(--brand-primary);
+}
+
+.jn-msg__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.jn-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 2.25rem;
+  padding: 0.375rem 0.875rem;
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--foreground-strong);
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
+  font-weight: 650;
+  line-height: 1.2;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast),
+    border-color var(--duration-fast),
+    color var(--duration-fast);
+}
+
+.jn-action:hover {
+  border-color: var(--foreground-strong);
+  background: var(--surface-tint);
+}
+
+/* A primeira ação de cada resposta é o próximo passo sugerido. */
+.jn-msg__actions > .jn-action:first-child {
+  border-color: var(--brand-strong);
+  background: var(--brand-strong);
+  color: var(--sj-white);
+}
+
+.jn-msg__actions > .jn-action:first-child:hover {
+  border-color: var(--sj-navy);
+  background: var(--sj-navy);
+}
+
+.jn-listen {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 1.75rem;
+  margin-top: 0.5rem;
+  padding: 0.125rem 0.25rem;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--foreground-muted);
+  font-family: var(--font-ui);
+  font-size: var(--text-caption);
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.jn-listen:hover {
+  color: var(--foreground-strong);
+}
+
+.jn-thinking {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.875rem;
+  color: var(--foreground-muted);
+  font-size: 0.8125rem;
+}
+
+.jn-dots {
+  display: inline-flex;
+  gap: 0.25rem;
+  padding: 0.6875rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 4px var(--radius-md) var(--radius-md) var(--radius-md);
+  background: var(--surface);
+}
+
+.jn-dots span {
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 50%;
+  background: var(--brand-primary);
+}
+
+.jn-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.875rem;
+  padding-left: 2.375rem;
+}
+
+.jn-chip {
+  padding: 0.4375rem 0.875rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--foreground-strong);
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast),
+    border-color var(--duration-fast);
+}
+
+.jn-chip:hover {
+  border-color: var(--brand-primary);
+  background: var(--tint-blue);
+}
+
+.jn-chip:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ---------- Contato com a equipe ---------- */
+
+.jn-contact {
+  margin-top: 0.75rem;
+  padding: 0.875rem;
+  border: 1px solid #efd982;
+  border-radius: var(--radius-md);
+  background: var(--tint-yellow);
+}
+
+.jn-contact__title {
+  color: var(--sj-navy);
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+}
+
+.jn-contact p {
+  margin-top: 0.25rem;
+  color: var(--sj-ink);
+  font-size: var(--text-small);
+  line-height: 1.5;
+}
+
+.jn-contact__channels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.625rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.jn-contact__copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 2.25rem;
+  margin-top: 0.75rem;
+  padding: 0.375rem 0.875rem;
+  border: 1.5px solid var(--sj-navy);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--sj-navy);
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.jn-contact__copy:hover {
+  background: rgb(10 22 98 / 0.07);
+}
+
+.jn-contact__manual {
+  display: block;
+  margin-top: 0.75rem;
+  color: var(--sj-ink);
+  font-size: 0.8125rem;
+}
+
+.jn-contact__manual textarea {
+  display: block;
+  width: 100%;
+  margin-top: 0.375rem;
+  padding: 0.5rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--sj-white);
+  font: inherit;
+  resize: vertical;
+}
+
+.jn-contact .jn-contact__note {
+  color: var(--foreground-muted);
+  font-size: var(--text-caption);
+}
+
+/* ---------- Rodapé: voz e campo de texto ---------- */
+
+.jn-footer {
+  flex-shrink: 0;
+  padding: 0.625rem 0.75rem max(0.625rem, env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.jn-voice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.625rem;
+  margin-bottom: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-tint);
+  color: var(--sj-ink);
+  font-size: var(--text-small);
+}
+
+.jn-voice[data-state='listening'] {
+  border-color: #f2c4c1;
+  background: var(--jn-live-tint);
+}
+
+.jn-voice[data-state='error'] {
+  border-color: #efd982;
+  background: var(--tint-yellow);
+}
+
+.jn-voice__text {
+  flex: 1;
+  min-width: 10rem;
+  line-height: 1.4;
+}
+
+.jn-voice__text q {
+  color: var(--sj-navy);
+  font-style: italic;
+}
+
+.jn-voice__text small {
+  display: block;
+  margin-top: 0.125rem;
+  color: var(--foreground-muted);
+  font-size: 0.6875rem;
+}
+
+.jn-voice__actions {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.jn-voice__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 2.25rem;
+  padding: 0.375rem 0.75rem;
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--foreground-strong);
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.jn-voice__button:hover {
+  border-color: var(--foreground-strong);
+}
+
+.jn-voice__button--primary {
+  border-color: var(--brand-strong);
+  background: var(--brand-strong);
+  color: var(--sj-white);
+}
+
+.jn-voice__button--primary:hover {
+  border-color: var(--sj-navy);
+  background: var(--sj-navy);
+}
+
+.jn-voice__button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.jn-live {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--jn-live);
+  font-family: var(--font-ui);
+  font-size: var(--text-caption);
+  font-weight: 700;
+}
+
+.jn-live__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--jn-live);
+}
+
+.jn-wave {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 1rem;
+}
+
+.jn-wave span {
+  width: 3px;
+  height: 45%;
+  border-radius: 2px;
+  background: var(--jn-live);
+}
+
+.jn-compose {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.375rem;
+  padding: 0.375rem;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 1.25rem;
+  background: var(--surface);
+  transition:
+    border-color var(--duration-fast),
+    box-shadow var(--duration-fast);
+}
+
+.jn-compose:focus-within {
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px rgb(60 126 249 / 0.18);
+}
+
+.jn-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 2.5rem;
+  max-height: 8rem;
+  padding: 0.5625rem 0.375rem 0.5625rem 0.625rem;
+  border: 0;
+  background: transparent;
+  color: var(--foreground);
+  font: inherit;
+  /* 16px evita o zoom automático do iOS ao focar o campo. */
+  font-size: 1rem;
+  line-height: 1.4;
+  resize: none;
+}
+
+.jn-input:focus-visible {
+  outline: none;
+}
+
+.jn-input::placeholder {
+  color: #767c92;
+}
+
+.jn-count {
+  align-self: center;
+  color: var(--foreground-muted);
+  font-family: var(--font-ui);
+  font-size: 0.6875rem;
+}
+
+.jn-mic,
+.jn-send {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast),
+    color var(--duration-fast);
+}
+
+.jn-mic {
+  position: relative;
+  background: var(--tint-blue);
+  color: var(--sj-navy);
+}
+
+.jn-mic:hover {
+  background: #d3e2ff;
+}
+
+.jn-mic[data-state='listening'],
+.jn-mic[data-state='requesting'] {
+  background: var(--jn-live);
+  color: var(--sj-white);
+}
+
+.jn-mic[data-state='unsupported'] {
+  background: var(--surface-muted);
+  color: #8e93a6;
+  cursor: help;
+}
+
+.jn-send {
+  background: var(--brand-strong);
+  color: var(--sj-white);
+}
+
+.jn-send:hover {
+  background: var(--sj-navy);
+}
+
+.jn-send:disabled {
+  background: var(--border);
+  color: #858ba0;
+  cursor: not-allowed;
+}
+
+.jn-disclaimer {
+  margin-top: 0.5rem;
+  padding: 0 0.25rem;
+  color: var(--foreground-muted);
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  text-align: center;
+}
+
+@media (max-width: 379.98px) {
+  .jn-header {
+    gap: 0.5rem;
+    padding-left: 0.75rem;
+  }
+
+  .jn-icon-btn {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  .jn-scroll {
+    padding-inline: 0.75rem;
+  }
+
+  .jn-chips {
+    padding-left: 0;
+  }
+}
+
+/* ---------- Movimento ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .jn-trigger__juno img {
+    animation: jn-float 3.6s ease-in-out infinite;
+  }
+
+  .jn-hint {
+    animation: jn-rise 0.35s var(--ease-out) both;
+  }
+
+  .jn-panel[data-mode='floating'][data-state='open'] {
+    animation: jn-pop-in 240ms var(--ease-out);
+  }
+
+  .jn-panel[data-mode='floating'][data-state='closed'] {
+    animation: jn-pop-out 160ms ease-in forwards;
+  }
+
+  .jn-panel[data-mode='sheet'][data-state='open'] {
+    animation: jn-sheet-in 280ms var(--ease-out);
+  }
+
+  .jn-panel[data-mode='sheet'][data-state='closed'] {
+    animation: jn-sheet-out 200ms ease-in forwards;
+  }
+
+  .jn-overlay[data-state='open'] {
+    animation: jn-fade-in 240ms ease-out;
+  }
+
+  .jn-overlay[data-state='closed'] {
+    animation: jn-fade-out 200ms ease-in forwards;
+  }
+
+  .jn-msg[data-fresh] {
+    animation: jn-rise 0.28s var(--ease-out) both;
+  }
+
+  /* Reações do mascote: leves, nunca chamativas. */
+  .jn-header__juno[data-status='idle'] img {
+    animation: jn-arrive 0.5s var(--ease-out);
+  }
+
+  .jn-avatar[data-status='listening'] img,
+  .jn-avatar[data-status='transcribing'] img {
+    animation: jn-listen 1.6s ease-in-out infinite;
+  }
+
+  .jn-avatar[data-status='listening']::after,
+  .jn-avatar[data-status='transcribing']::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    animation: jn-pulse 1.6s ease-out infinite;
+  }
+
+  .jn-avatar[data-status='thinking'] img {
+    animation: jn-think 1.4s ease-in-out infinite;
+  }
+
+  .jn-avatar[data-status='speaking'] img {
+    animation: jn-speak 0.7s ease-in-out infinite;
+  }
+
+  .jn-dots span {
+    animation: jn-dot 1s ease-in-out infinite;
+  }
+
+  .jn-dots span:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+
+  .jn-dots span:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  .jn-wave span {
+    animation: jn-wave 0.9s ease-in-out infinite;
+  }
+
+  .jn-wave span:nth-child(2) {
+    animation-delay: 0.12s;
+  }
+
+  .jn-wave span:nth-child(3) {
+    animation-delay: 0.24s;
+  }
+
+  .jn-wave span:nth-child(4) {
+    animation-delay: 0.36s;
+  }
+
+  .jn-presence[data-live] .jn-presence__dot,
+  .jn-live__dot {
+    animation: jn-blink 1.2s ease-in-out infinite;
+  }
+
+  .jn-mic[data-state='listening']::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    animation: jn-pulse 1.6s ease-out infinite;
+  }
+
+  .jn-spin {
+    animation: jn-spin 0.9s linear infinite;
+  }
+}
+
+/* Movimento reduzido: sem flutuação nem pulsos; abertura só com opacidade. */
+@media (prefers-reduced-motion: reduce) {
+  .jn-panel[data-state='open'],
+  .jn-overlay[data-state='open'] {
+    animation: jn-fade-in 120ms ease-out;
+  }
+
+  .jn-panel[data-state='closed'],
+  .jn-overlay[data-state='closed'] {
+    animation: jn-fade-out 100ms ease-in forwards;
+  }
+}
+
+@keyframes jn-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes jn-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes jn-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+}
+
+@keyframes jn-pop-out {
+  to {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+
+@keyframes jn-sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(2rem);
+  }
+}
+
+@keyframes jn-sheet-out {
+  to {
+    opacity: 0;
+    transform: translateY(2rem);
+  }
+}
+
+@keyframes jn-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes jn-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes jn-arrive {
+  0% {
+    transform: translateY(0) rotate(0);
+  }
+  40% {
+    transform: translateY(-3px) rotate(-4deg);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes jn-listen {
+  0%,
+  100% {
+    transform: rotate(6deg);
+  }
+  50% {
+    transform: rotate(9deg) translateY(-1px);
+  }
+}
+
+@keyframes jn-think {
+  0%,
+  100% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(4deg);
+  }
+}
+
+@keyframes jn-speak {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1.5px);
+  }
+}
+
+@keyframes jn-pulse {
+  from {
+    box-shadow: 0 0 0 0 rgb(201 48 44 / 0.45);
+  }
+  to {
+    box-shadow: 0 0 0 10px rgb(201 48 44 / 0);
+  }
+}
+
+@keyframes jn-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 0.45;
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes jn-wave {
+  0%,
+  100% {
+    height: 35%;
+  }
+  50% {
+    height: 100%;
+  }
+}
+
+@keyframes jn-blink {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes jn-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}

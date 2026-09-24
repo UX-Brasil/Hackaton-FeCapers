@@ -1,0 +1,361 @@
+/* ==========================================================================
+   Componentes reutilizáveis — botões, selo, balão, mascote, toast, topo.
+   ========================================================================== */
+
+/* ---------- Botões: primary, secondary, ghost ---------- */
+
+.btn {
+  --btn-bg: var(--brand-strong);
+  --btn-fg: var(--sj-white);
+  --btn-border: transparent;
+  --btn-bg-hover: var(--sj-navy);
+  --btn-fg-hover: var(--sj-white);
+  --btn-border-hover: transparent;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  min-height: 3rem;
+  padding: 0.75rem 1.375rem;
+  border: 1.5px solid var(--btn-border);
+  border-radius: var(--radius-pill);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-family: var(--font-ui);
+  font-size: 0.9375rem;
+  font-weight: 650;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    background-color var(--duration) var(--ease-out),
+    color var(--duration) var(--ease-out),
+    border-color var(--duration) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.btn:hover {
+  background: var(--btn-bg-hover);
+  color: var(--btn-fg-hover);
+  border-color: var(--btn-border-hover);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn:disabled,
+.btn[aria-disabled='true'] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn__icon {
+  flex-shrink: 0;
+  transition: transform var(--duration) var(--ease-out);
+}
+
+.btn:hover .btn__icon--arrow {
+  transform: translateX(3px);
+}
+
+.btn:hover .btn__icon--down {
+  transform: translateY(3px);
+}
+
+.btn:hover .btn__icon--external {
+  transform: translate(2px, -2px);
+}
+
+.btn--secondary {
+  --btn-bg: transparent;
+  --btn-fg: var(--foreground-strong);
+  --btn-border: var(--border-strong);
+  --btn-bg-hover: transparent;
+  --btn-fg-hover: var(--foreground-strong);
+  --btn-border-hover: var(--foreground-strong);
+}
+
+.btn--ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--foreground-strong);
+  --btn-bg-hover: transparent;
+  --btn-fg-hover: var(--foreground-strong);
+  padding-inline: 0.25rem;
+  border-radius: var(--radius-sm);
+}
+
+/* Sublinhado que cresce da esquerda para a direita. */
+.btn--ghost .btn__label {
+  background: linear-gradient(currentColor, currentColor) left bottom / 0 1.5px no-repeat;
+  transition: background-size var(--duration) var(--ease-out);
+}
+
+.btn--ghost:hover .btn__label {
+  background-size: 100% 1.5px;
+}
+
+.btn--sm {
+  min-height: 2.5rem;
+  padding: 0.5rem 1.125rem;
+  font-size: 0.875rem;
+}
+
+.surface-dark .btn--primary {
+  --btn-bg: var(--sj-white);
+  --btn-fg: var(--sj-navy);
+  --btn-bg-hover: var(--sj-yellow);
+  --btn-fg-hover: var(--sj-navy);
+}
+
+/* ---------- Selo do hero ---------- */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.375rem 0.875rem 0.375rem 0.625rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--foreground-strong);
+  font-family: var(--font-ui);
+  font-size: var(--text-small);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.pill__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--sj-cyan);
+  box-shadow: 0 0 0 3px var(--tint-cyan);
+}
+
+/* ---------- Balão de fala do Juno ---------- */
+
+.bubble {
+  position: absolute;
+  z-index: 2;
+  max-width: 15.5rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--sj-white);
+  box-shadow: var(--shadow-sm);
+  color: var(--sj-ink);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+
+.bubble strong {
+  display: block;
+  color: var(--sj-navy);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+}
+
+/* Rabicho do balão; a direção é definida por modificador. */
+.bubble::after {
+  content: '';
+  position: absolute;
+  width: 0.875rem;
+  height: 0.875rem;
+  border: inherit;
+  border-top: 0;
+  border-left: 0;
+  background: inherit;
+}
+
+.bubble--right::after {
+  top: 1.25rem;
+  right: -0.5rem;
+  transform: rotate(-45deg);
+}
+
+.bubble--bottom::after {
+  bottom: -0.5rem;
+  left: 1.75rem;
+  transform: rotate(45deg);
+}
+
+/* ---------- Mascotes ---------- */
+
+.mascot {
+  position: relative;
+  display: inline-block;
+}
+
+.mascot__float {
+  display: block;
+}
+
+.mascot__float img {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.mascot__shadow {
+  position: absolute;
+  left: 50%;
+  bottom: -9%;
+  width: 62%;
+  height: 7%;
+  border-radius: 50%;
+  background: rgb(10 22 98 / 0.28);
+  translate: -50% 0;
+}
+
+/* ---------- Símbolo em blocos (motivo gráfico do logo) ---------- */
+
+.tilemark {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ---------- Toast ---------- */
+
+.toast-viewport {
+  position: fixed;
+  left: 50%;
+  bottom: 1.25rem;
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  width: min(26rem, 100% - 2rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  translate: -50% 0;
+  outline: none;
+}
+
+/* No mobile o aviso fica acima do lançador do Juno. */
+@media (max-width: 639px) {
+  .toast-viewport {
+    bottom: calc(1.25rem + var(--juno-launcher-clearance, 0px));
+  }
+}
+
+.toast {
+  position: relative;
+  display: grid;
+  gap: 0.25rem;
+  padding: 1rem 3rem 1rem 1.25rem;
+  border-radius: var(--radius-md);
+  background: var(--sj-navy);
+  box-shadow: var(--shadow-md);
+  color: var(--sj-white);
+}
+
+.toast__title {
+  font-family: var(--font-ui);
+  font-size: var(--text-small);
+  font-weight: 700;
+  color: var(--sj-yellow);
+}
+
+.toast__text {
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: #e3e7f8;
+}
+
+.toast__close {
+  position: absolute;
+  top: 0.625rem;
+  right: 0.625rem;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--sj-white);
+  cursor: pointer;
+  transition: background-color var(--duration-fast);
+}
+
+.toast__close:hover {
+  background: rgb(255 255 255 / 0.12);
+}
+
+.toast__close:focus-visible {
+  outline-color: var(--sj-yellow);
+}
+
+.toast[data-state='open'] {
+  animation: sj-toast-in 0.35s var(--ease-out);
+}
+
+.toast[data-state='closed'] {
+  animation: sj-toast-out 0.2s ease-in forwards;
+}
+
+.toast[data-swipe='move'] {
+  transform: translateX(var(--radix-toast-swipe-move-x));
+}
+
+.toast[data-swipe='end'] {
+  animation: sj-toast-swipe 0.2s ease-out forwards;
+}
+
+/* ---------- Voltar ao topo ---------- */
+
+.to-top {
+  position: fixed;
+  right: 1.25rem;
+  /* Empilha acima do lançador do Juno quando ele estiver montado. */
+  bottom: calc(1.25rem + var(--juno-launcher-clearance, 0px) + env(safe-area-inset-bottom));
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid rgb(255 255 255 / 0.2);
+  border-radius: 50%;
+  background: var(--sj-navy);
+  box-shadow: var(--shadow-md);
+  color: var(--sj-white);
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  translate: 0 0.75rem;
+  transition:
+    opacity var(--duration) var(--ease-out),
+    translate var(--duration) var(--ease-out),
+    visibility 0s linear var(--duration),
+    background-color var(--duration-fast);
+}
+
+.to-top[data-visible='true'] {
+  opacity: 1;
+  visibility: visible;
+  translate: 0 0;
+  transition:
+    opacity var(--duration) var(--ease-out),
+    translate var(--duration) var(--ease-out),
+    visibility 0s,
+    background-color var(--duration-fast);
+}
+
+.to-top:hover {
+  background: var(--sj-indigo);
+}
+
+.to-top svg {
+  transition: transform var(--duration) var(--ease-out);
+}
+
+.to-top:hover svg {
+  transform: translateY(-2px);
+}

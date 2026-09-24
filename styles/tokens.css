@@ -1,0 +1,131 @@
+/* ==========================================================================
+   Design tokens — SouJunior
+   Paleta e tipografia do handoff oficial. Componentes usam apenas os tokens
+   semânticos; superfícies escuras redefinem esses tokens em `.surface-dark`.
+   ========================================================================== */
+
+:root {
+  /* Paleta institucional */
+  --sj-navy: #0a1662;
+  --sj-indigo: #0e14bf;
+  --sj-blue: #3c7ef9;
+  --sj-purple: #6366f1;
+  --sj-cyan: #22d3ee;
+  --sj-yellow: #facc15;
+  --sj-ink: #242731;
+  --sj-gray: #f4f4f6;
+  --sj-white: #ffffff;
+
+  /* Marca */
+  --brand-primary: var(--sj-blue);
+  --brand-secondary: var(--sj-navy);
+  --brand-strong: var(--sj-indigo);
+  --accent: var(--sj-yellow);
+
+  /* Superfícies */
+  --surface: var(--sj-white);
+  --surface-muted: var(--sj-gray);
+  --surface-tint: #eef3fe;
+  --surface-dark: var(--sj-navy);
+
+  /* Texto */
+  --foreground: var(--sj-ink);
+  --foreground-strong: var(--sj-navy);
+  --foreground-muted: #565b6d;
+  --foreground-accent: var(--sj-indigo);
+
+  /* Bordas e foco */
+  --border: #e1e5ef;
+  --border-strong: #c3cbe0;
+  --focus-ring: var(--sj-blue);
+
+  /* Tons claros das cores de destaque */
+  --tint-blue: #e4edff;
+  --tint-indigo: #e5e6fb;
+  --tint-cyan: #d9f7fc;
+  --tint-purple: #eaeafe;
+  --tint-yellow: #fff5c7;
+
+  /* Tipografia */
+  --font-display: 'Funnel Display Variable', 'Funnel Sans Variable', system-ui, sans-serif;
+  --font-body: 'Funnel Sans Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-ui: 'Plus Jakarta Sans Variable', 'Funnel Sans Variable', system-ui, sans-serif;
+
+  --text-display: clamp(2.5rem, 1.6rem + 3.6vw, 4.5rem);
+  --text-h1: clamp(2.25rem, 1.5rem + 3vw, 4rem);
+  --text-h2: clamp(2rem, 1.5rem + 2vw, 3.25rem);
+  --text-h3: clamp(1.25rem, 1.15rem + 0.4vw, 1.5rem);
+  --text-body-lg: clamp(1.0625rem, 1rem + 0.25vw, 1.25rem);
+  --text-body: 1rem;
+  --text-small: 0.875rem;
+  --text-eyebrow: 0.8125rem;
+  --text-caption: 0.75rem;
+
+  /* Espaçamento (base 8px) */
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 2.5rem;
+  --space-6: 3rem;
+  --space-8: 4rem;
+  --section-space: clamp(4.5rem, 3rem + 6vw, 8rem);
+  --gutter: clamp(1rem, 0.4rem + 2.6vw, 2.5rem);
+  --panel-inset: clamp(0.5rem, 0.1rem + 1.4vw, 1.25rem);
+  --wrap: 76rem;
+  --header-h: 4.5rem;
+
+  /* Raio */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 28px;
+  --radius-pill: 999px;
+
+  /* Sombras */
+  --shadow-sm: 0 1px 2px rgb(10 22 98 / 0.06), 0 6px 16px -8px rgb(10 22 98 / 0.14);
+  --shadow-md: 0 24px 48px -24px rgb(10 22 98 / 0.35);
+
+  /* Movimento */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 160ms;
+  --duration: 280ms;
+}
+
+/* Superfícies escuras: os mesmos componentes, com tokens invertidos. */
+.surface-dark {
+  --foreground: var(--sj-white);
+  --foreground-strong: var(--sj-white);
+  --foreground-muted: #c9cfec;
+  --foreground-accent: var(--sj-cyan);
+  --border: rgb(255 255 255 / 0.16);
+  --border-strong: rgb(255 255 255 / 0.4);
+  --focus-ring: var(--sj-yellow);
+  color: var(--foreground);
+}
+
+/* Cor de destaque por item (cards, áreas, depoimentos, caminhos). */
+[data-accent='blue'] {
+  --accent-color: var(--sj-blue);
+  --accent-tint: var(--tint-blue);
+  --accent-on: var(--sj-white);
+}
+[data-accent='indigo'] {
+  --accent-color: var(--sj-indigo);
+  --accent-tint: var(--tint-indigo);
+  --accent-on: var(--sj-white);
+}
+[data-accent='cyan'] {
+  --accent-color: var(--sj-cyan);
+  --accent-tint: var(--tint-cyan);
+  --accent-on: var(--sj-navy);
+}
+[data-accent='purple'] {
+  --accent-color: var(--sj-purple);
+  --accent-tint: var(--tint-purple);
+  --accent-on: var(--sj-white);
+}
+[data-accent='yellow'] {
+  --accent-color: var(--sj-yellow);
+  --accent-tint: var(--tint-yellow);
+  --accent-on: var(--sj-navy);
+}

@@ -1,0 +1,215 @@
+/* ==========================================================================
+   Base — fontes, reset complementar ao preflight do Tailwind e tipografia.
+   ========================================================================== */
+
+@font-face {
+  font-family: 'Funnel Display Variable';
+  font-style: normal;
+  font-weight: 300 800;
+  font-display: swap;
+  src: url('/fonts/funnel-display-latin-wght-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Funnel Sans Variable';
+  font-style: normal;
+  font-weight: 300 800;
+  font-display: swap;
+  src: url('/fonts/funnel-sans-latin-wght-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans Variable';
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url('/fonts/plus-jakarta-sans-latin-wght-normal.woff2') format('woff2');
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-h) + 1rem);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: clip;
+  background: var(--surface);
+  color: var(--foreground);
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  color: var(--foreground-strong);
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+[tabindex='-1']:focus {
+  outline: none;
+}
+
+::selection {
+  background: var(--sj-yellow);
+  color: var(--sj-navy);
+}
+
+/* ---------- Utilitários de layout ---------- */
+
+.wrap {
+  width: min(100% - 2 * var(--gutter), var(--wrap));
+  margin-inline: auto;
+}
+
+.section {
+  position: relative;
+  padding-block: var(--section-space);
+}
+
+/* Painel com cantos arredondados e recuo lateral, usado nas seções escuras. */
+.panel {
+  margin-inline: var(--panel-inset);
+  border-radius: var(--radius-lg);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  background: var(--sj-navy);
+  color: var(--sj-white);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+/* ---------- Tipografia ---------- */
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-bottom: var(--space-2);
+  color: var(--foreground-accent);
+  font-family: var(--font-ui);
+  font-size: var(--text-eyebrow);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Pequeno bloco que ecoa os quadrados do símbolo SouJunior. */
+.eyebrow::before {
+  content: '';
+  width: 0.625rem;
+  height: 0.625rem;
+  flex-shrink: 0;
+  border-radius: 3px;
+  background: currentColor;
+}
+
+.section-title {
+  font-size: var(--text-h2);
+}
+
+.lead {
+  color: var(--foreground-muted);
+  font-size: var(--text-body-lg);
+  line-height: 1.6;
+}
+
+.section-header {
+  max-width: 44rem;
+  margin-bottom: clamp(2.5rem, 2rem + 2vw, 4rem);
+}
+
+.section-header .lead {
+  margin-top: var(--space-3);
+}
+
+@media (min-width: 1024px) {
+  /* Título à esquerda, texto de apoio à direita, alinhados pela base. */
+  .section-header--split {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: var(--space-8);
+    align-items: end;
+    max-width: none;
+  }
+
+  .section-header--split .lead {
+    margin-top: 0;
+  }
+}
+
+/* Título com revelação por linha: cada linha é uma máscara. */
+.line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.line__inner {
+  display: block;
+}
+
+.text-accent {
+  color: var(--brand-primary);
+}
