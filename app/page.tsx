@@ -5,6 +5,8 @@ import {ProposalSection} from '@/components/sections/proposal-section';
 import {PillarsSection} from '@/components/sections/pillars-section';
 import {CommunityGallerySection} from '@/components/sections/community-gallery-section';
 import {AreasSection} from '@/components/sections/areas-section';
+import {JourneySection} from '@/components/journey/journey-section';
+import {AreaDiscoverySection} from '@/components/journey/area-discovery-section';
 import {TestimonialsSection} from '@/components/sections/testimonials-section';
 import {CommunitySection} from '@/components/sections/community-section';
 import {CareerSupportSection} from '@/components/sections/career-support-section';
@@ -29,6 +31,8 @@ export default function Home() {
         <PillarsSection />
         <CommunityGallerySection />
         <AreasSection />
+        <JourneySection />
+        <AreaDiscoverySection />
         <TestimonialsSection />
         <CommunitySection />
         <CareerSupportSection />
