@@ -1,46 +1,120 @@
 import type {Metadata, Viewport} from 'next';
 import type {ReactNode} from 'react';
-import {SITE_URL} from '@/content/links';
+import {links, SITE_URL} from '@/content/links';
+import {areas} from '@/content/site';
+import {
+  githubUrl,
+  keywords,
+  siteDescription,
+  siteLongDescription,
+  siteName,
+  siteTitle,
+  tagline,
+  team,
+} from '@/content/seo';
 import './globals.css';
 
-const title = 'SouJunior — Sua primeira experiência real em tecnologia';
-const description =
-  'Participe da SouJunior, uma comunidade gratuita onde profissionais iniciantes ganham experiência prática em tecnologia trabalhando em projetos reais com mentoria e equipes multidisciplinares.';
-
+// A imagem de compartilhamento vem de app/opengraph-image.tsx e app/twitter-image.tsx.
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title,
-  description,
-  alternates: {canonical: '/'},
+  title: {default: siteTitle, template: `%s | ${siteName}`},
+  description: siteDescription,
+  applicationName: siteName,
+  keywords,
+  authors: team.members.map((member) => ({name: member.name, url: githubUrl(member.github)})),
+  creator: team.name,
+  publisher: siteName,
+  category: 'technology',
+  alternates: {
+    canonical: '/',
+    languages: {'pt-BR': '/'},
+  },
   openGraph: {
     type: 'website',
     locale: 'pt_BR',
     url: '/',
-    siteName: 'SouJunior',
-    title,
-    description,
-    images: [{url: '/og.png', width: 1200, height: 630, alt: 'SouJunior — Sua primeira experiência real em tecnologia'}],
+    siteName,
+    title: siteTitle,
+    description: siteDescription,
   },
-  twitter: {card: 'summary_large_image', title, description, images: ['/og.png']},
-  robots: {index: true, follow: true},
+  twitter: {
+    card: 'summary_large_image',
+    title: siteTitle,
+    description: siteDescription,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1,
+    },
+  },
+  formatDetection: {telephone: false, email: false, address: false},
   icons: {icon: '/favicon.svg', apple: '/apple-touch-icon.png'},
 };
 
 export const viewport: Viewport = {
   themeColor: '#eef3fe',
+  colorScheme: 'light',
 };
+
+const organizationId = `${SITE_URL}/#organization`;
+const websiteId = `${SITE_URL}/#website`;
 
 const structuredData = {
   '@context': 'https://schema.org',
   '@graph': [
     {
       '@type': 'Organization',
-      name: 'SouJunior',
+      '@id': organizationId,
+      name: siteName,
       url: SITE_URL,
-      logo: `${SITE_URL}/images/soujunior-logo.png`,
-      description,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${SITE_URL}/images/soujunior-logo.png`,
+        width: 240,
+        height: 56,
+      },
+      description: siteLongDescription,
+      slogan: tagline,
+      knowsAbout: areas.map((area) => area.name),
+      sameAs: [links.apoiaSe],
     },
-    {'@type': 'WebSite', name: 'SouJunior', url: SITE_URL, inLanguage: 'pt-BR'},
+    {
+      '@type': 'WebSite',
+      '@id': websiteId,
+      name: siteName,
+      url: SITE_URL,
+      description: siteDescription,
+      inLanguage: 'pt-BR',
+      publisher: {'@id': organizationId},
+      creator: team.members.map((member) => ({
+        '@type': 'Person',
+        name: member.name,
+        url: githubUrl(member.github),
+      })),
+    },
+    {
+      '@type': 'WebPage',
+      '@id': `${SITE_URL}/#webpage`,
+      url: SITE_URL,
+      name: siteTitle,
+      description: siteDescription,
+      inLanguage: 'pt-BR',
+      isPartOf: {'@id': websiteId},
+      about: {'@id': organizationId},
+      primaryImageOfPage: {
+        '@type': 'ImageObject',
+        url: `${SITE_URL}/opengraph-image`,
+        width: 1200,
+        height: 630,
+      },
+      keywords: keywords.join(', '),
+    },
   ],
 };
 
