@@ -277,11 +277,10 @@ export function areaChoice(): Draft {
   return {
     answer: paragraphs(
       'Posso te ajudar com isso.',
-      `A SouJunior possui ${areaCount} áreas diferentes. Se você gosta de construir interfaces, Front-end pode ser um caminho. Se prefere APIs e lógica de servidor, vale conhecer Back-end. Também existem Mobile, Data, QA e DevOps, entre outras.`,
-      'Se você se interessa mais por pessoas, produto ou comunicação, dê uma olhada em Produtos, Ágil, UI & UX Design, Tech Recruiter, Social Media e Business.',
-      'Quer conhecer todas as áreas?',
+      'Temos uma experiência rápida que sugere algumas áreas para você conhecer, com base no que você gosta de fazer.',
+      `A SouJunior possui ${areaCount} áreas diferentes. Se você gosta de construir interfaces, Front-end pode ser um caminho. Se prefere APIs e lógica de servidor, vale conhecer Back-end. Se você se interessa mais por pessoas, produto ou comunicação, dê uma olhada em Produtos, Ágil, UI & UX Design, Tech Recruiter, Social Media e Business.`,
     ),
-    actions: [scroll('areas', `Ver as ${areaCount} áreas`)],
+    actions: [scroll('descubra', 'Descobrir meu lugar'), scroll('areas', `Ver as ${areaCount} áreas`)],
     followUps: ['Gosto de criar interfaces', 'Prefiro trabalhar com dados'],
   };
 }

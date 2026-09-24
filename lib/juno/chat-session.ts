@@ -196,6 +196,24 @@ export function showContactCard(fromId: string) {
   update({messages: [...messages, card]});
 }
 
+/** Mensagem do Juno vinda de fora do chat (ex.: resultado do "Descubra seu lugar"). */
+export function appendAssistantMessage({content, followUps}: {content: string; followUps?: string[]}) {
+  const {messages} = getSnapshot();
+  const last = messages[messages.length - 1];
+  // Abrir o Juno duas vezes com o mesmo contexto não repete a mensagem.
+  if (last?.role === 'assistant' && last.content === content) return;
+  const message: JunoMessage = {
+    id: createId(),
+    role: 'assistant',
+    content,
+    createdAt: Date.now(),
+    kind: 'answer',
+    intent: 'areaDiscovery',
+    followUps,
+  };
+  update({messages: [...messages, message]});
+}
+
 export function clearConversation() {
   inFlight?.abort();
   inFlight = null;

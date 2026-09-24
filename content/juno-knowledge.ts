@@ -39,6 +39,8 @@ const SECTION_FLAGS: Record<SectionId, true> = {
   sobre: true,
   pilares: true,
   areas: true,
+  jornada: true,
+  descubra: true,
   depoimentos: true,
   participe: true,
   mentores: true,

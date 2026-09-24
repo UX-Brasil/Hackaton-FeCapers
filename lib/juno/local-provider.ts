@@ -25,6 +25,8 @@ const SECTION_INTENT: Record<SectionId, IntentId> = {
   sobre: 'about',
   pilares: 'pillars',
   areas: 'areasList',
+  jornada: 'participate',
+  descubra: 'areaChoice',
   depoimentos: 'testimonials',
   participe: 'participate',
   mentores: 'beMentor',

@@ -76,12 +76,14 @@ function JunoDialog({mode, onRequestClose, ref}: JunoPanelProps & {ref?: Ref<HTM
           : 'idle';
   const lastMessage = chat.messages[chat.messages.length - 1];
   const lastJunoId = chat.messages.findLast(({role}) => role === 'assistant')?.id ?? 'welcome';
-  const chips =
-    chat.questionCount === 0
+  // Continuações da última resposta têm prioridade, inclusive numa mensagem de
+  // contexto aberta de fora do chat (ex.: resultado do "Descubra seu lugar").
+  const lastFollowUps = !chat.pending && lastMessage.role === 'assistant' ? lastMessage.followUps : undefined;
+  const chips = lastFollowUps?.length
+    ? lastFollowUps
+    : chat.questionCount === 0
       ? INITIAL_SUGGESTIONS
-      : !chat.pending && lastMessage.role === 'assistant'
-        ? (lastMessage.followUps ?? [])
-        : [];
+      : [];
 
   // Mostra o começo de cada resposta nova (ou o fim da conversa enquanto o Juno pensa).
   useEffect(() => {
