@@ -15,7 +15,7 @@ export function AreasSection() {
         </header>
 
         {areas.map((area) => (
-          <article className="area" data-accent={area.accent} key={area.name}>
+          <article id={`area-${area.id}`} className="area" data-accent={area.accent} key={area.id}>
             <span className="area__num" aria-hidden="true">
               {area.number}
             </span>

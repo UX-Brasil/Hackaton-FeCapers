@@ -83,18 +83,18 @@ export const pillars: Pillar[] = [
 ];
 
 export const areas: Area[] = [
-  {number: '01', name: 'Business', description: 'Análise de negócios e viabilidade', icon: Briefcase, accent: 'blue'},
-  {number: '02', name: 'Tech Recruiter', description: 'Gestão de talentos e hunting', icon: UserSearch, accent: 'cyan'},
-  {number: '03', name: 'Produtos', description: 'Product Management & Discovery', icon: Layers, accent: 'purple'},
-  {number: '04', name: 'Ágil', description: 'Scrum Masters e Agilistas', icon: Workflow, accent: 'yellow'},
-  {number: '05', name: 'Social Media', description: 'Comunicação e engajamento', icon: Megaphone, accent: 'cyan'},
-  {number: '06', name: 'UI & UX Design', description: 'Pesquisas, wireframes e interfaces', icon: PenTool, accent: 'blue'},
-  {number: '07', name: 'Front-end', description: 'React, Next.js, Tailwind, Vue', icon: Monitor, accent: 'yellow'},
-  {number: '08', name: 'Back-end', description: 'Node, Java, Python, C# e APIs', icon: Database, accent: 'purple'},
-  {number: '09', name: 'Data', description: 'Engenharia e Análise de Dados', icon: ChartNoAxesCombined, accent: 'blue'},
-  {number: '10', name: 'Mobile', description: 'Flutter, React Native, Swift, Kotlin', icon: Smartphone, accent: 'purple'},
-  {number: '11', name: 'QA', description: 'Quality Assurance & Automação', icon: ShieldCheck, accent: 'yellow'},
-  {number: '12', name: 'DevOps', description: 'CI/CD, Docker, Kubernetes & Nuvem', icon: Cloud, accent: 'cyan'},
+  {id: 'business', number: '01', name: 'Business', description: 'Análise de negócios e viabilidade', icon: Briefcase, accent: 'blue'},
+  {id: 'tech-recruiter', number: '02', name: 'Tech Recruiter', description: 'Gestão de talentos e hunting', icon: UserSearch, accent: 'cyan'},
+  {id: 'produtos', number: '03', name: 'Produtos', description: 'Product Management & Discovery', icon: Layers, accent: 'purple'},
+  {id: 'agil', number: '04', name: 'Ágil', description: 'Scrum Masters e Agilistas', icon: Workflow, accent: 'yellow'},
+  {id: 'social-media', number: '05', name: 'Social Media', description: 'Comunicação e engajamento', icon: Megaphone, accent: 'cyan'},
+  {id: 'ui-ux', number: '06', name: 'UI & UX Design', description: 'Pesquisas, wireframes e interfaces', icon: PenTool, accent: 'blue'},
+  {id: 'front-end', number: '07', name: 'Front-end', description: 'React, Next.js, Tailwind, Vue', icon: Monitor, accent: 'yellow'},
+  {id: 'back-end', number: '08', name: 'Back-end', description: 'Node, Java, Python, C# e APIs', icon: Database, accent: 'purple'},
+  {id: 'data', number: '09', name: 'Data', description: 'Engenharia e Análise de Dados', icon: ChartNoAxesCombined, accent: 'blue'},
+  {id: 'mobile', number: '10', name: 'Mobile', description: 'Flutter, React Native, Swift, Kotlin', icon: Smartphone, accent: 'purple'},
+  {id: 'qa', number: '11', name: 'QA', description: 'Quality Assurance & Automação', icon: ShieldCheck, accent: 'yellow'},
+  {id: 'devops', number: '12', name: 'DevOps', description: 'CI/CD, Docker, Kubernetes & Nuvem', icon: Cloud, accent: 'cyan'},
 ];
 
 export const communityRoles: CommunityRole[] = [
@@ -187,6 +187,8 @@ export const footerNavigation: FooterLink[] = [
   {label: 'Nossa proposta', href: '#sobre'},
   {label: 'O que você encontra', href: '#pilares'},
   {label: 'Áreas de atuação', href: '#areas'},
+  {label: 'Sua jornada', href: '#jornada'},
+  {label: 'Descubra seu lugar', href: '#descubra'},
   {label: 'Depoimentos', href: '#depoimentos'},
 ];
 

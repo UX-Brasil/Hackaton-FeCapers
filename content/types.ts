@@ -8,6 +8,8 @@ export type SectionId =
   | 'sobre'
   | 'pilares'
   | 'areas'
+  | 'jornada'
+  | 'descubra'
   | 'depoimentos'
   | 'participe'
   | 'mentores'
@@ -39,7 +41,23 @@ export interface Pillar {
   tag: string;
 }
 
+/** Identificador estável de cada área (âncora `#area-<id>` e pontuação do quiz). */
+export type AreaId =
+  | 'business'
+  | 'tech-recruiter'
+  | 'produtos'
+  | 'agil'
+  | 'social-media'
+  | 'ui-ux'
+  | 'front-end'
+  | 'back-end'
+  | 'data'
+  | 'mobile'
+  | 'qa'
+  | 'devops';
+
 export interface Area {
+  id: AreaId;
   number: string;
   name: string;
   description: string;
@@ -84,4 +102,31 @@ export interface SupportOption {
 export interface FooterLink {
   label: string;
   href: string;
+}
+
+/** Complemento visual de cada etapa da jornada. */
+export type JourneyExtra = 'notNeeded' | 'areas' | 'squad' | 'practice' | 'growth';
+
+export interface JourneyStep {
+  id: number;
+  /** Nome curto da etapa, ex.: "Você chega". */
+  label: string;
+  title: string;
+  text: string[];
+  /** Frase de apoio em destaque. */
+  highlight?: string;
+  extra: JourneyExtra;
+  accent: Accent;
+}
+
+export interface DiscoveryOption {
+  label: string;
+  /** Pontos que a opção soma a cada área relacionada. */
+  scores: Partial<Record<AreaId, number>>;
+}
+
+export interface DiscoveryQuestion {
+  id: string;
+  question: string;
+  options: DiscoveryOption[];
 }
