@@ -5,6 +5,7 @@ import {areas} from '@/content/site';
 import {
   githubUrl,
   keywords,
+  organization,
   siteDescription,
   siteLongDescription,
   siteName,
@@ -81,8 +82,9 @@ const structuredData = {
       },
       description: siteLongDescription,
       slogan: tagline,
+      foundingDate: organization.foundingDate,
       knowsAbout: areas.map((area) => area.name),
-      sameAs: [links.apoiaSe],
+      sameAs: [organization.website, organization.linkedin, links.apoiaSe],
     },
     {
       '@type': 'WebSite',

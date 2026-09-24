@@ -26,7 +26,7 @@ export const links = {
  * Redes sociais oficiais. Só aparecem no rodapé quando `href` estiver preenchido.
  */
 export const socialLinks: {label: string; href: Href}[] = [
-  {label: 'LinkedIn', href: null},
+  {label: 'LinkedIn', href: 'https://www.linkedin.com/company/soujunior/'},
   {label: 'GitHub', href: null},
   {label: 'Instagram', href: null},
   {label: 'Discord', href: null},

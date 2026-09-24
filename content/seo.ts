@@ -19,7 +19,14 @@ export const siteDescription =
 
 /** Descrição longa, usada no JSON-LD e no llms.txt. */
 export const siteLongDescription =
-  'A SouJunior é uma comunidade aberta e 100% gratuita onde pessoas em início de carreira ou em transição para tecnologia trabalham em produtos digitais reais, em squads multidisciplinares com Scrum e Kanban, recebem mentoria de profissionais experientes e ganham visibilidade com recrutadores parceiros.';
+  'A SouJunior é uma iniciativa sem fins lucrativos, aberta e 100% gratuita, onde pessoas em início de carreira ou em transição para tecnologia trabalham em produtos digitais reais, em squads multidisciplinares com Scrum e Kanban, recebem mentoria de profissionais experientes e ganham visibilidade com recrutadores parceiros. Tudo acontece de forma voluntária, simulando o dia a dia de uma empresa real.';
+
+/** Dados institucionais da página oficial da SouJunior no LinkedIn. */
+export const organization = {
+  website: 'https://www.soujunior.tech/',
+  linkedin: 'https://www.linkedin.com/company/soujunior/',
+  foundingDate: '2022',
+};
 
 export const keywords = [
   'SouJunior',
