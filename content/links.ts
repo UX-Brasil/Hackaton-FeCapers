@@ -1,10 +1,10 @@
 import type {Href} from './types';
 
 /**
- * Endereço público da landing, usado em canonical, Open Graph, sitemap e robots.
- * Troque pelo domínio oficial quando a página for publicada nele.
+ * Endereço público da landing, usado em canonical, Open Graph, sitemap, robots,
+ * JSON-LD e llms.txt. Troque pelo domínio oficial quando a página for publicada nele.
  */
-export const SITE_URL = 'https://soujunior-comunidade.hermes-ia.chatgpt.site';
+export const SITE_URL = 'https://hackaton-fecapers.vercel.app';
 
 /**
  * Destinos externos da landing.
